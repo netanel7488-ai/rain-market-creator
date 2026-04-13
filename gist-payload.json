@@ -1,0 +1,11 @@
+{
+  "public": true,
+  "files": {
+    "server.js": {
+      "content": ""
+    },
+    "package.json": {
+      "content": ""
+    }
+  }
+}

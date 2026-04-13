@@ -85,6 +85,29 @@ app.get('/api/positions/:address', async (req, res) => {
   }
 });
 
+// Get smart account address from EOA
+// Rain creates a smart account deterministically from EOA on first use
+app.get('/api/smart-account/:eoaAddress', async (req, res) => {
+  try {
+    // Query user's positions - this returns the smart account address
+    const result = await rain.getPositions(req.params.eoaAddress);
+    
+    // The 'address' field in the response IS the smart account address
+    res.json({ 
+      eoa: req.params.eoaAddress,
+      smartAccount: result.address || null,
+      hasPositions: result.markets && result.markets.length > 0
+    });
+  } catch (error) {
+    console.error('Smart account lookup error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      eoa: req.params.eoaAddress,
+      smartAccount: null
+    });
+  }
+});
+
 // Get smart account balance (internal Rain wallet)
 app.get('/api/balance/:address', async (req, res) => {
   try {

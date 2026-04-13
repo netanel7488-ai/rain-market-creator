@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rain Market Creator - Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      direction: rtl;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 { color: #667eea; font-size: 2rem; }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+    h2 { color: #667eea; margin-bottom: 20px; }
+    .market-item {
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border-right: 4px solid #667eea;
+    }
+    .market-title { font-weight: bold; color: #333; margin-bottom: 8px; }
+    .market-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .stat-value { font-weight: bold; color: #667eea; }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌧️ Rain Market Creator - Demo</h1>
+      <button onclick="connectWallet()">התחבר לארנק</button>
+    </header>
+
+    <div class="card">
+      <h2>📊 Markets פעילים מ-Rain Protocol</h2>
+      <div id="markets"><div class="loader"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>ℹ️ הדרכה</h2>
+      <p style="line-height:1.6;">
+        זוהי גרסת demo שמציגה markets אמיתיים מ-Rain Protocol.<br><br>
+        <strong>כדי להתחיל:</strong><br>
+        1. התקן MetaMask<br>
+        2. התחבר ל-Arbitrum One<br>
+        3. השרת המלא נמצא ב: /home/node/.joni/workspace/rain-market-creator<br><br>
+        <strong>הרץ אותו עם:</strong> <code>npm run dev</code>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    async function loadMarkets() {
+      try {
+        const res = await fetch('https://prod-api.rain.one/v1/markets/public?limit=10&sortBy=Liquidity&status=Live');
+        const data = await res.json();
+        
+        const container = document.getElementById('markets');
+        container.innerHTML = '';
+
+        data.forEach(market => {
+          const vol = market.totalVolume ? (Number(market.totalVolume) / 1000000).toFixed(2) : '0.00';
+          const liq = market.totalLiquidity ? (Number(market.totalLiquidity) / 1000000).toFixed(2) : '0.00';
+          
+          const div = document.createElement('div');
+          div.className = 'market-item';
+          div.innerHTML = `
+            <div class="market-title">${market.question || 'ללא שאלה'}</div>
+            <div class="market-stats">
+              <div><span class="stat-value">$${vol}</span> נפח</div>
+              <div><span class="stat-value">$${liq}</span> נזילות</div>
+              <div><span class="stat-value">${market.status}</span></div>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById('markets').innerHTML = '<p style="color:red;">שגיאה בטעינת markets</p>';
+        console.error(err);
+      }
+    }
+
+    function connectWallet() {
+      alert('בגרסת Demo זו, התחברות לארנק לא זמינה.\nהרץ את השרת המלא עם: npm run dev');
+    }
+
+    loadMarkets();
+  </script>
+</body>
+</html>

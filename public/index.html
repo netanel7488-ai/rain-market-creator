@@ -442,6 +442,17 @@
 
     async function loadWalletInfo(address) {
       try {
+        // Load smart account address
+        const smartAccRes = await fetch(`/api/smart-account/${address}`);
+        const smartAccData = await smartAccRes.json();
+        
+        if (smartAccData.smartAccount) {
+          document.getElementById('internalAddress').textContent = smartAccData.smartAccount;
+        } else {
+          document.getElementById('internalAddress').textContent = 'טרם נוצר (ייווצר בטרנזקציה הראשונה)';
+        }
+        
+        // Load USDT balance
         const balanceRes = await fetch(`/api/balance/${address}`);
         const balances = await balanceRes.json();
         
@@ -453,6 +464,7 @@
       } catch (err) {
         console.error('Load wallet error:', err);
         document.getElementById('usdtBalance').textContent = 'שגיאה';
+        document.getElementById('internalAddress').textContent = 'שגיאה בטעינה';
       }
     }
 
