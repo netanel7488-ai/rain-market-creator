@@ -1,0 +1,17 @@
+{
+  "name": "rain-market-creator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@buidlrrr/rain-sdk": "latest",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}
